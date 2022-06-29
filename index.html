@@ -14,32 +14,41 @@
 
 
 <div class="container-fluid mt-3" id="app">
-    <input type="text" class="form-control" v-model="criterioDeBusqueda"
-        placeholder="Ingresar un criterio de busqueda...">
-    <br>
-    <div class="card-deck m-0">
-        <div class="row">
-            <div class="col" v-for="persona in personasFiltradas">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
-                        <p class="card-text">dni {{persona.dni}}</p>
-                        <a href="#" class="card-link">{{persona.correo}}</a>
+    <input type="text" class="form-control" v-model="nombreYApellido"
+     placeholder="Ingresar nombre y apellido">
+
+     <br>
+     <input type="text" class="form-control" v-model="dniBuscado"
+     placeholder="Ingresar dni">
+     <br>
+
+     <p v-if="calcularCaracteres.min" class="alert alert-warning">
+        Debe ingresar 3 carácteres.
+    </p>
+    <div class="container-fluid mt-3" id="app">
+        <div class="card-deck m-0">
+            <div class="row">
+                <div class="col" v-for="persona in busqueda">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                            <p class="card-text">dni {{persona.dni}}</p>
+                            <a href="#" class="card-link">{{persona.correo}}</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
-
 </html>
 
 <script>
     new Vue({
         el: '#app',
         data: {
-            criterioDeBusqueda: '',
+            nombreYApellido: '',
+            dniBuscado: '',
+
             //Aquí, en este array es donde tienen que agregar su información
             personas: [
                 {
@@ -49,21 +58,36 @@
                     dni: "20442873"
                 },
                 {
-                    nombre: "...",
-                    apellido: "...",
-                    correo: "...",
-                    dni: "..."
+                    nombre: "Santiago",
+                    apellido: "Barriopedro",
+                    correo: "santiagobarriopedro@gmail.com",
+                    dni: "39417189"
+                },
+                {
+                    nombre: "Fabian",
+                    apellido: "Trecco",
+                    correo: "fTrecco@gmail.com",
+                    dni: "39683355"
                 },
             ]
 
         },
         computed: {
-            personasFiltradas() {
+            busqueda() {
                 return this.personas.filter((persona) => {
                     let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
+                    return registroCompleto.toLowerCase().includes(this.nombreYApellido.toLowerCase() || this.dniBuscado)
                 });
-            }
+            },
+            calcularCaracteres(){
+               let cantDniBuscado = this.dniBuscado.length
+               let cantNombreYApellido = this.nombreYApellido.length
+               let total = cantDniBuscado + cantNombreYApellido
+                return {
+                    min: total < 3
+                }
+        }
+
         },
         methods: {
             getNombreCompleto(persona) {
@@ -71,4 +95,6 @@
             }
         }
     });
+
+
 </script>
